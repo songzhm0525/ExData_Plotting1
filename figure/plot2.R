@@ -1,0 +1,17 @@
+setwd("/Users/zhengmingsong/Google Drive/R/EDA")
+temp <- tempfile(fileext=".zip")
+download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip" , method = 'curl', destfil = temp )
+dateDownloaded = date()
+data <- read.table(unz(temp, "household_power_consumption.txt"),,sep=";",header = T)
+# data = read.table("data.txt",sep=";",header = T)
+unlink(temp)
+dates = paste(data[,1],data[,2])
+dts = strptime(dates,"%d/%m/%Y %H:%M:%S")
+ldt = strptime("2007-02-01", "%Y-%m-%d")
+udt = strptime("2007-02-02", "%Y-%m-%d")
+sub = data[(as.Date(dts) == as.Date(ldt) | as.Date(dts) == as.Date(udt)),]
+subdates = dts[(as.Date(dts) == as.Date(ldt) | as.Date(dts) == as.Date(udt))]
+Global_active_power = as.numeric(as.character(sub$Global_active_power))
+png(filename = "plot2.png",width = 480, height = 480)
+plot(subdates,Global_active_power,type = 'l',xlab = "")
+dev.off()
